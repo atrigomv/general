@@ -1,9 +1,14 @@
 #!/bin/bash
 
 echo ""
-echo -e "\e[0;34m[+]  finger.sh v0.1 by Alvaro Trigo \e[0m"
+echo -e "\e[0;34m[+]  finger.sh v0.2 by Alvaro Trigo \e[0m"
 echo -e "\e[0;34m[+]  Starting fingerprint at" `date`  "\e[0m"
 echo -e "\e[0;34m[+]  The target host has the follow IP:" $1 "\e[0m"
+
+# Creating flag dirb
+
+dirb="0"
+dirb443="0"
 
 # Creating the results folder:
 
@@ -174,6 +179,7 @@ else
 	if [ $variable = "80/open" ]
 		then
 		#80 open"
+		dirb="1"
 		echo -e "\e[1;35m[+]  80/tcp port detected as open\e[0m"
 		echo -e "\e[0;34m[+]  Executing Nikto scanner on 80/tcp port...\e[0m"
 		touch $1/$1_nikto80.txt
@@ -193,6 +199,7 @@ else
 	if [ $variable = "443/open" ]
                 then
                 #443 open"
+		dirb443="1"
                 echo -e "\e[1;35m[+]  443/tcp port detected as open\e[0m"
                 echo -e "\e[0;34m[+]  Executing Nikto scanner on 443/tcp port...\e[0m"
 		touch $1/$1_nikto443.txt
@@ -249,6 +256,27 @@ else
 
 
 fi
+
+# Fuzzing web directories with dirb
+
+if [ $dirb = "1" ]
+	then
+	cd $1
+	echo -e "\e[0;34m[+]  Fuzzing web directories with dirb on 80/tcp port\e[0m"
+	dirb http://$1 /root/Documents/pentest/fuzzers/wordlist/raft-large-directories.txt -w -N 400 -o $1_directories_80.txt > /fichero 2>&1
+	echo -e "\e[0;34m[+]  Fuzzing step finished\e[0m"
+	cd ..
+fi
+
+if [ $dirb443 = "1" ]
+        then
+        cd $1
+        echo -e "\e[0;34m[+]  Fuzzing web directories with dirb on 443/tcp port\e[0m"
+        dirb https://$1 /root/Documents/pentest/fuzzers/wordlist/raft-large-directories.txt -w -N 400 -o $1_directories_443.txt > /fichero 2>&1
+        echo -e "\e[0;34m[+]  Fuzzing step finished\e[0m"
+        cd ..
+fi
+
+
 echo -e "\e[0;34m[+]  Analysis finished at" `date`  "\e[0m"
 rm $1/$1_webapp.txt
-
