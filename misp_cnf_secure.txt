@@ -1,0 +1,4 @@
+misp_server_url = <YOUR_MISP_SERVER>
+key = <YOUR_KEY>
+time_schedule = 4d
+types = domain url sha256 email-src email-subject email-attachment mutex filename
