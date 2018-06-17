@@ -3,7 +3,7 @@
 ###############################################################################################################
 
 ##	Security test python script.
-##	Execute web app and infraestructure scanners through DevOps pipeline
+##	Execute web app and infraestructure scanners in DevOps pipeline
 ##	by Alvaro Trigo
 
 ###############################################################################################################
@@ -54,7 +54,5 @@ if args.wordpress:
 if args.dast:
 	if args.target is not None:
        		subprocess.call(['skipfish','-o' + str(timestamp), args.target])
-		print "Ejecuto skipfish y zap"
-		print "IP selected: " + args.target
 	else:
                 print sys.argv[0][2:] + ": error: argument -d/--dast: a valid IP or URL must be selected using -t/--target option"
